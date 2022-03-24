@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bookApp/pkg/Base/book"
 	postgres "bookApp/pkg/db"
 	"log"
 
@@ -16,11 +17,14 @@ func main() {
 
 	}
 
-	_, err = postgres.NewPsqlDB()
+	db, err := postgres.NewPsqlDB()
 	if err != nil {
 		log.Fatal("Postgres cannot init")
 	}
 	log.Println("Postgress connected")
 
+	// Repositories
+	bookrepo := book.NewBookRepository(db)
+	bookrepo.Migrations()
 	// bookList.CreateList()
 }
