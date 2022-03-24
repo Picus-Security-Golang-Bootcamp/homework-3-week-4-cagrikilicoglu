@@ -1,0 +1,57 @@
+[
+  {
+    "id": "1",
+    "name": "A Tale of Two Cities",
+    "pageNumber": 320,
+    "stockNumber": 10,
+    "stockId": "21AC",
+    "price": 15.3,
+    "isbn": "9780451530578",
+    "isDeleted": false,
+    "author": { "id": "101", "name": "Charles Dickens" }
+  },
+  {
+    "id": "2",
+    "name": "The Hobbit",
+    "pageNumber": 376,
+    "stockNumber": 10,
+    "stockId": "44UY",
+    "price": 24.0,
+    "isbn": "9780547928227",
+    "isDeleted": false,
+    "author": { "id": "202", "name": "J. R. R. Tolkien" }
+  },
+  {
+    "id": "3",
+    "name": "Harry Potter and the Philosophers Stone",
+    "pageNumber": 560,
+    "stockNumber": 10,
+    "stockId": "22OL",
+    "price": 32.2,
+    "isbn": "9781408855898",
+    "isDeleted": false,
+    "author": { "id": "303", "name": "J. K. Rowling" }
+  },
+  {
+    "id": "4",
+    "name": "The Little Prince",
+    "pageNumber": 102,
+    "stockNumber": 10,
+    "stockId": "09UJ",
+    "price": 7.8,
+    "isbn": "9781853261589",
+    "isDeleted": false,
+    "author": { "id": "404", "name": "Antoine de Saint-Exupéry" }
+  },
+  {
+    "id": "5",
+    "name": "Dream of the Red Chamber",
+    "pageNumber": 350,
+    "stockNumber": 10,
+    "stockId": "77II",
+    "price": 17.0,
+    "isbn": "9780385093798",
+    "isDeleted": false,
+    "author": { "id": "505", "name": "Cao Xueqin" }
+  }
+]
