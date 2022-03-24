@@ -3,7 +3,6 @@ package main
 import (
 	"bookApp/pkg/Base/book"
 	postgres "bookApp/pkg/db"
-	"fmt"
 	"log"
 
 	"github.com/joho/godotenv"
@@ -29,11 +28,17 @@ func main() {
 	// bookrepo.Migrations()
 	// bookrepo.InsertSampleData()
 
-	// fmt.Println(bookrepo.FindAll())
+	// authorrepo := author.NewAuthorRepository(db)
+	// authorrepo.Migrations()
+	// authorrepo.InsertSampleData()
+	// fmt.Println(authorrepo.FindAuthorsWithBookInfo())
 	// fmt.Println(bookrepo.FindByBookID("2"))
 	// fmt.Println(bookrepo.FindByBookName("the"))
+	// fmt.Println(authorrepo.FindAuthorsWithoutBookInfo())
+	// fmt.Println(authorrepo.FindByAuthorID("404"))
+	// fmt.Println(authorrepo.FindByAuthorName("J."))
 	// fmt.Println(bookrepo.FindByAuthorName("ca"))
-	// bookrepo.DeleteByID("3")
-	fmt.Println(bookrepo.BuyByID("4", 3))
+	bookrepo.DeleteByID("4")
+	// fmt.Println(bookrepo.BuyByID("4", 3))
 	// bookList.CreateList()
 }
