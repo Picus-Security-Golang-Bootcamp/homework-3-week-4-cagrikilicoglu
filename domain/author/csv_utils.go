@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-// readAuthorsWithWorkerPool: Reading a csv file concurrently and returns a author slice with the authors in the file
+// readAuthorsWithWorkerPool: Reading a csv file concurrently and returns an author slice with the authors in the file
 func readAuthorsWithWorkerPool(path string) ([]Author, error) {
 	const numJobs = 5
 	authors := []Author{}

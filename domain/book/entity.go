@@ -8,31 +8,36 @@ import (
 
 type Book struct {
 	gorm.Model
-	ID          string  `json:"id"`
-	Name        string  `json:"name"`
-	PageNumber  uint    `json:"pageNumber"`
-	StockNumber int     `json:"stockNumber"`
-	StockID     string  `json:"stockId"`
-	Price       float32 `json:"price"`
-	ISBN        string  `json:"isbn"`
-	IsDeleted   bool    `json:"isdeleted"`
-	AuthorID    string  `json:"authorid"`
-	AuthorName  string  `json:"authorName"`
+	ID          string
+	Name        string
+	PageNumber  uint
+	StockNumber int
+	StockID     string
+	Price       float32
+	ISBN        string
+	IsDeleted   bool
+	AuthorID    string
+	AuthorName  string
 }
 
+// ToString: Convert book data into more readable string
 func (b *Book) ToString() string {
 	return fmt.Sprintf("ID: %s, Name: %s, Page Number: %d, Stock Number: %d, StockID: %s, Price: %.2f, ISBN: %s, IsDeleted: %t, Author ID: %s, Author Name: %s", b.ID, b.Name, b.PageNumber, b.StockNumber, b.StockID, b.Price, b.ISBN, b.IsDeleted, b.AuthorID, b.AuthorName)
 }
 
+// BeforeDelete: Print book name before deleting.
 func (b *Book) BeforeDelete(tx *gorm.DB) error {
 	fmt.Printf("Book %s is deleting...\n", b.Name)
 	return nil
 }
+
+// AfterDelete: Print book name after it is deleted with a success message.
 func (b *Book) AfterDelete(tx *gorm.DB) error {
 	fmt.Printf("Book %s is succesfully deleted...\n", b.Name)
 	return nil
 }
 
-// func (b *Book) SetStockNumber(number int) {
-// 	b.StockNumber = number
-// }
+// AfterDelete: Print book name after it is deleted with a success message.
+func (b *Book) AfterOrder(num int) {
+	fmt.Printf("Book %s of quantity %d is succesfully ordered...\n", b.Name, num)
+}

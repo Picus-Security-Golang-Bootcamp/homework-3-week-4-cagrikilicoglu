@@ -26,15 +26,16 @@ func (a *AuthorRepository) Migrations() {
 }
 
 // InsertAuthorData: insert author data to database by the given input path
-func (a *AuthorRepository) InsertAuthorData(path string) {
+func (a *AuthorRepository) InsertAuthorData(path string) error {
 
 	authors, err := readAuthorsWithWorkerPool(path)
 	if err != nil {
-		return
+		return err
 	}
 	for _, author := range authors {
 		a.db.Where(Author{ID: author.ID}).Attrs(Author{ID: author.ID, Name: author.Name}).FirstOrCreate(&author)
 	}
+	return nil
 }
 
 // FindAuthorsWithBookInfo: Find all the authors with their book data
@@ -48,13 +49,13 @@ func (a *AuthorRepository) FindAuthorsWithBookInfo() ([]Author, error) {
 }
 
 // FindAuthorsWithBookInfo: Find all the authors without their book data
-func (a *AuthorRepository) FindAuthorsWithoutBookInfo() []Author {
+func (a *AuthorRepository) FindAuthorsWithoutBookInfo() ([]Author, error) {
 	authors := []Author{}
-	a.db.Find(&authors)
-	// if result.Error != nil {
-	// 	return nil, result.Error
-	// }
-	return authors
+	result := a.db.Find(&authors)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return authors, nil
 }
 
 // FindByAuthorID: returns the author with given ID input
@@ -70,10 +71,13 @@ func (a *AuthorRepository) FindByAuthorID(ID string) (*Author, error) {
 
 // FindByAuthorName: returns the author with given name input
 // the search is elastic and case insensitive
-func (a *AuthorRepository) FindByAuthorName(name string) []Author {
+func (a *AuthorRepository) FindByAuthorName(name string) ([]Author, error) {
 	authors := []Author{}
 	nameString := fmt.Sprintf("%%%s%%", name)
 
-	a.db.Where("name ILIKE ?", nameString).Find(&authors)
-	return authors
+	result := a.db.Where("name ILIKE ?", nameString).Find(&authors)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return authors, nil
 }
