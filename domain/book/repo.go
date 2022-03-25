@@ -31,7 +31,6 @@ func (b *BookRepository) InsertBookData(path string) {
 	if err != nil {
 		return
 	}
-
 	for _, book := range books {
 		b.db.Where(Book{ID: book.ID}).Attrs(Book{ID: book.ID, Name: book.Name, PageNumber: book.PageNumber, StockNumber: book.StockNumber, StockID: book.StockID, Price: book.Price, ISBN: book.ISBN, IsDeleted: book.IsDeleted, AuthorID: book.AuthorID, AuthorName: book.AuthorName}).FirstOrCreate(&book)
 	}
@@ -41,6 +40,13 @@ func (b *BookRepository) InsertBookData(path string) {
 func (b *BookRepository) FindAll() []Book {
 	books := []Book{}
 	b.db.Find(&books)
+	return books
+}
+
+// FindAllIncludingDeleted(): return all the books including the deleted ones in database
+func (b *BookRepository) FindAllIncludingDeleted() []Book {
+	books := []Book{}
+	b.db.Unscoped().Find(&books)
 	return books
 }
 
@@ -85,7 +91,7 @@ func (b *BookRepository) FindByBookISBN(ISBN string) (*Book, error) {
 	return &book, nil
 }
 
-// FindByBookID: returns the book/s with given name input
+// FindByBookName: returns the book/s with given name input
 // the search is elastic and case insensitive
 func (b *BookRepository) FindByBookName(name string) []Book {
 	books := []Book{}

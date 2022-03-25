@@ -4,7 +4,6 @@ import (
 	// "bookApp/pkg/csv_utils"
 	postgres "bookApp/common/db"
 	"bookApp/domain/author"
-	"bookApp/domain/book"
 	"fmt"
 	"log"
 
@@ -27,12 +26,13 @@ func main() {
 	log.Println("Postgress connected")
 
 	// Repositories
-	bookRepo := book.NewBookRepository(db)
+	// bookRepo := book.NewBookRepository(db)
 	// bookRepo.SetupDatabase("books.csv")
 
 	// fmt.Println(bookRepo.FindAll())
+	// fmt.Println(bookRepo.FindAllIncludingDeleted())
 	// fmt.Println(bookRepo.FindAllInStock())
-	fmt.Println(bookRepo.FindAllBooksUnderPrice(30))
+	// fmt.Println(bookRepo.FindAllBooksUnderPrice(30))
 	// fmt.Println(bookRepo.FindByBookID("2"))
 	// fmt.Println(bookRepo.FindByBookISBN("9780385093798"))
 	// fmt.Println(bookRepo.FindByBookName("the"))
@@ -41,14 +41,15 @@ func main() {
 	// fmt.Println(bookRepo.BuyByBookID("3", 1))
 
 	authorRepo := author.NewAuthorRepository(db)
-	authorRepo.Migrations()
-	authorRepo.InsertAuthorData("authors.csv")
+	// authorRepo.SetupDatabase("authors.csv")
+	// authorRepo.Migrations()
+	// authorRepo.InsertAuthorData("authors.csv")
 	// fmt.Println(authorRepo.FindAuthorsWithBookInfo())
 	// fmt.Println(bookrepo.FindByBookID("2"))
 	// fmt.Println(bookrepo.FindByBookName("the"))
-	// fmt.Println(authorrepo.FindAuthorsWithoutBookInfo())
-	// fmt.Println(authorrepo.FindByAuthorID("404"))
-	// fmt.Println(authorrepo.FindByAuthorName("J."))
+	// fmt.Println(authorRepo.FindAuthorsWithoutBookInfo())
+	fmt.Println(authorRepo.FindByAuthorID("404"))
+	fmt.Println(authorRepo.FindByAuthorName("J."))
 	// fmt.Println(bookrepo.FindByAuthorName("ca"))
 	// bookrepo.DeleteByID("4")
 	// fmt.Println(bookrepo.BuyByID("4", 3))

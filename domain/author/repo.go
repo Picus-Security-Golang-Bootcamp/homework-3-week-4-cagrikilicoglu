@@ -14,38 +14,30 @@ func NewAuthorRepository(db *gorm.DB) *AuthorRepository {
 	return &AuthorRepository{db: db}
 }
 
+// SetupDatabase: automatically migrates database of Authors with gorm and insert author data to database by the given input path
+func (a *AuthorRepository) SetupDatabase(path string) {
+	a.Migrations()
+	a.InsertAuthorData(path)
+}
+
+// Migrations: automatically migrates database of Authors
 func (a *AuthorRepository) Migrations() {
 	a.db.AutoMigrate(&Author{})
 }
 
+// InsertAuthorData: insert author data to database by the given input path
 func (a *AuthorRepository) InsertAuthorData(path string) {
-	// authors := []Author{
-	// {
-	// 	ID:   "101",
-	// 	Name: "Charles Dickens",
-	// },
-	// {
-	// 	ID:   "202",
-	// 	Name: "J. R. R. Tolkien",
-	// },
-	// {
-	// 	ID:   "303",
-	// 	Name: "J. K. Rowling",
-	// },
-	// {
-	// 	ID:   "404",
-	// 	Name: "Antoine de Saint-Exupéry",
-	// },
-	// {
-	// 	ID:   "505",
-	// 	Name: "Cao Xueqin",
-	// }}
-	authors, _ := readAuthorsWithWorkerPool(path)
+
+	authors, err := readAuthorsWithWorkerPool(path)
+	if err != nil {
+		return
+	}
 	for _, author := range authors {
 		a.db.Where(Author{ID: author.ID}).Attrs(Author{ID: author.ID, Name: author.Name}).FirstOrCreate(&author)
 	}
-
 }
+
+// FindAuthorsWithBookInfo: Find all the authors with their book data
 func (a *AuthorRepository) FindAuthorsWithBookInfo() ([]Author, error) {
 	authors := []Author{}
 	result := a.db.Preload("Books").Find(&authors)
@@ -54,21 +46,30 @@ func (a *AuthorRepository) FindAuthorsWithBookInfo() ([]Author, error) {
 	}
 	return authors, nil
 }
-func (a *AuthorRepository) FindAuthorsWithoutBookInfo() ([]Author, error) {
+
+// FindAuthorsWithBookInfo: Find all the authors without their book data
+func (a *AuthorRepository) FindAuthorsWithoutBookInfo() []Author {
 	authors := []Author{}
-	result := a.db.Find(&authors)
+	a.db.Find(&authors)
+	// if result.Error != nil {
+	// 	return nil, result.Error
+	// }
+	return authors
+}
+
+// FindByAuthorID: returns the author with given ID input
+// the search is elastic and case insensitive
+func (a *AuthorRepository) FindByAuthorID(ID string) (*Author, error) {
+	author := Author{}
+	result := a.db.Where(&Author{ID: ID}).First(&author)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return authors, nil
+	return &author, nil
 }
 
-func (a *AuthorRepository) FindByAuthorID(ID string) Author {
-	author := Author{}
-	a.db.Where(&Author{ID: ID}).First(&author)
-	return author
-}
-
+// FindByAuthorName: returns the author with given name input
+// the search is elastic and case insensitive
 func (a *AuthorRepository) FindByAuthorName(name string) []Author {
 	authors := []Author{}
 	nameString := fmt.Sprintf("%%%s%%", name)
