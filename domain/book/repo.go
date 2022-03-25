@@ -139,7 +139,7 @@ func (b *BookRepository) InsertSampleData(path string) {
 	// 		AuthorName:  "Cao Xueqin",
 	// 	}}
 
-	books, _ := GetBooksWithWorkerPool(path)
+	books, _ := readBooksWithWorkerPool(path)
 	// fmt.Println(results)
 
 	for _, book := range books {

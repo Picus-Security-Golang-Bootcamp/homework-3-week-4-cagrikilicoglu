@@ -2,8 +2,10 @@ package main
 
 import (
 	// "bookApp/pkg/csv_utils"
-	"bookApp/pkg/Base/book"
-	postgres "bookApp/pkg/db"
+	postgres "bookApp/common/db"
+	"bookApp/domain/author"
+	"bookApp/domain/book"
+	"fmt"
 	"log"
 
 	"github.com/joho/godotenv"
@@ -29,10 +31,10 @@ func main() {
 	bookrepo.Migrations()
 	bookrepo.InsertSampleData("books.csv")
 
-	// authorrepo := author.NewAuthorRepository(db)
-	// authorrepo.Migrations()
-	// authorrepo.InsertSampleData()
-	// fmt.Println(authorrepo.FindAuthorsWithBookInfo())
+	authorrepo := author.NewAuthorRepository(db)
+	authorrepo.Migrations()
+	authorrepo.InsertSampleData("authors.csv")
+	fmt.Println(authorrepo.FindAuthorsWithBookInfo())
 	// fmt.Println(bookrepo.FindByBookID("2"))
 	// fmt.Println(bookrepo.FindByBookName("the"))
 	// fmt.Println(authorrepo.FindAuthorsWithoutBookInfo())

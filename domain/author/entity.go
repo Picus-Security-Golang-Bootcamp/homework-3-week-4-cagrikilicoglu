@@ -1,7 +1,7 @@
 package author
 
 import (
-	"bookApp/pkg/Base/book"
+	"bookApp/domain/book"
 
 	"gorm.io/gorm"
 )

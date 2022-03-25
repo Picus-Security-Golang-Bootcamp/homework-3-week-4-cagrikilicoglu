@@ -18,28 +18,29 @@ func (a *AuthorRepository) Migrations() {
 	a.db.AutoMigrate(&Author{})
 }
 
-func (a *AuthorRepository) InsertSampleData() {
-	authors := []Author{
-		{
-			ID:   "101",
-			Name: "Charles Dickens",
-		},
-		{
-			ID:   "202",
-			Name: "J. R. R. Tolkien",
-		},
-		{
-			ID:   "303",
-			Name: "J. K. Rowling",
-		},
-		{
-			ID:   "404",
-			Name: "Antoine de Saint-Exupéry",
-		},
-		{
-			ID:   "505",
-			Name: "Cao Xueqin",
-		}}
+func (a *AuthorRepository) InsertSampleData(path string) {
+	// authors := []Author{
+	// {
+	// 	ID:   "101",
+	// 	Name: "Charles Dickens",
+	// },
+	// {
+	// 	ID:   "202",
+	// 	Name: "J. R. R. Tolkien",
+	// },
+	// {
+	// 	ID:   "303",
+	// 	Name: "J. K. Rowling",
+	// },
+	// {
+	// 	ID:   "404",
+	// 	Name: "Antoine de Saint-Exupéry",
+	// },
+	// {
+	// 	ID:   "505",
+	// 	Name: "Cao Xueqin",
+	// }}
+	authors, _ := readAuthorsWithWorkerPool(path)
 	for _, author := range authors {
 		a.db.Where(Author{ID: author.ID}).Attrs(Author{ID: author.ID, Name: author.Name}).FirstOrCreate(&author)
 	}

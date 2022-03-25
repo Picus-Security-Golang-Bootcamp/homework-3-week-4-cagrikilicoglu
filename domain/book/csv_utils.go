@@ -2,13 +2,13 @@ package book
 
 import (
 	"encoding/csv"
-	"fmt"
 	"os"
 	"strconv"
 	"sync"
 )
 
-func GetBooksWithWorkerPool(path string) ([]Book, error) {
+// readBooksWithWorkerPool: Reading a csv file concurrently and returns a book slice with the books in the file
+func readBooksWithWorkerPool(path string) ([]Book, error) {
 	const numJobs = 5
 	books := []Book{}
 	jobs := make(chan []string, numJobs)
@@ -16,57 +16,62 @@ func GetBooksWithWorkerPool(path string) ([]Book, error) {
 	wg := sync.WaitGroup{}
 
 	for w := 1; w <= 3; w++ {
-		fmt.Println("Worker starting", w)
 		wg.Add(1)
 		go toStruct(jobs, results, &wg)
 	}
 	go func() {
-		fmt.Println("open file running...")
-		f, _ := os.Open(path)
+		f, err := os.Open(path)
+		if err != nil {
+			return
+		}
 		defer f.Close()
 
-		lines, _ := csv.NewReader(f).ReadAll()
-
+		lines, err := csv.NewReader(f).ReadAll()
+		if err != nil {
+			return
+		}
 		for _, line := range lines[1:] {
-			fmt.Println("line", line[0])
 			jobs <- line
 		}
+
 		close(jobs)
 	}()
 
 	go func() {
-		fmt.Println("wait")
 		wg.Wait()
 		close(results)
 	}()
 
-	fmt.Println(results)
 	for b := range results {
 		books = append(books, b)
 	}
+
 	return books, nil
 }
 
+// toStruct: creates a book struct as the data from the file is read and send the struct to results channel
 func toStruct(jobs <-chan []string, results chan<- Book, wg *sync.WaitGroup) {
 	defer wg.Done()
-	for j := range jobs {
-		pageNumberParsed, _ := strconv.Atoi(j[2])
-		// if err != nil {
-		// 	return err
-		// }
-		stockNumberParsed, _ := strconv.Atoi(j[3])
-		// if err != nil {
-		// 	return err
-		// }
-		priceParsed, _ := strconv.ParseFloat(j[5], 0)
-		// if err != nil {
-		// 	return err
-		// }
 
-		isDeletedParsed, _ := strconv.ParseBool(j[7])
-		// if err != nil {
-		// 	return err
-		// }
+	for j := range jobs {
+		// parse string data read from csv file to the matching types with book struct
+		pageNumberParsed, err := strconv.Atoi(j[2])
+		if err != nil {
+			return
+		}
+		stockNumberParsed, err := strconv.Atoi(j[3])
+		if err != nil {
+			return
+		}
+		priceParsed, err := strconv.ParseFloat(j[5], 32)
+		if err != nil {
+			return
+		}
+		isDeletedParsed, err := strconv.ParseBool(j[7])
+		if err != nil {
+			return
+		}
+
 		book := Book{ID: j[0],
 			Name:        j[1],
 			PageNumber:  uint(pageNumberParsed),
@@ -79,7 +84,5 @@ func toStruct(jobs <-chan []string, results chan<- Book, wg *sync.WaitGroup) {
 			AuthorName:  j[9]}
 
 		results <- book
-
 	}
-
 }
