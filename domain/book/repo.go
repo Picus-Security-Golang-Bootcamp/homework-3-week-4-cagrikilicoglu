@@ -32,7 +32,7 @@ func (b *BookRepository) InsertBookData(path string) error {
 		return err
 	}
 	for _, book := range books {
-		b.db.Where(Book{ID: book.ID}).Attrs(Book{ID: book.ID, Name: book.Name, PageNumber: book.PageNumber, StockNumber: book.StockNumber, StockID: book.StockID, Price: book.Price, ISBN: book.ISBN, IsDeleted: book.IsDeleted, AuthorID: book.AuthorID, AuthorName: book.AuthorName}).FirstOrCreate(&book)
+		b.db.Where(Book{ID: book.ID}).Attrs(Book{ID: book.ID, Name: book.Name, PageNumber: book.PageNumber, StockNumber: book.StockNumber, StockID: book.StockID, Price: book.Price, ISBN: book.ISBN, AuthorID: book.AuthorID, AuthorName: book.AuthorName}).FirstOrCreate(&book)
 	}
 	return nil
 }

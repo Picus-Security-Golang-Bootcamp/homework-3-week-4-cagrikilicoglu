@@ -81,3 +81,14 @@ func (a *AuthorRepository) FindByAuthorName(name string) ([]Author, error) {
 	}
 	return authors, nil
 }
+
+func (a *AuthorRepository) FindBooksOfAuthorByName(name string) ([]Author, error) {
+	authors := []Author{}
+	nameString := fmt.Sprintf("%%%s%%", name)
+
+	result := a.db.Preload("Books").Where("name ILIKE ?", nameString).Find(&authors)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return authors, nil
+}

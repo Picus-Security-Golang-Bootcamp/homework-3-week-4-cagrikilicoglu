@@ -67,10 +67,6 @@ func toStruct(jobs <-chan []string, results chan<- Book, wg *sync.WaitGroup) {
 		if err != nil {
 			return
 		}
-		isDeletedParsed, err := strconv.ParseBool(j[7])
-		if err != nil {
-			return
-		}
 
 		book := Book{ID: j[0],
 			Name:        j[1],
@@ -79,9 +75,8 @@ func toStruct(jobs <-chan []string, results chan<- Book, wg *sync.WaitGroup) {
 			StockID:     j[4],
 			Price:       float32(priceParsed),
 			ISBN:        j[6],
-			IsDeleted:   isDeletedParsed,
-			AuthorID:    j[8],
-			AuthorName:  j[9]}
+			AuthorID:    j[7],
+			AuthorName:  j[8]}
 
 		results <- book
 	}
