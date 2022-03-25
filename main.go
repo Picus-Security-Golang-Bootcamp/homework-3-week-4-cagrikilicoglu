@@ -20,6 +20,7 @@ func main() {
 
 	}
 
+	// Initialize database
 	db, err := postgres.NewPsqlDB()
 	if err != nil {
 		log.Fatal("Postgres cannot be initalized.")
@@ -40,6 +41,7 @@ func main() {
 	authorRepo := author.NewAuthorRepository(db)
 	authorRepo.SetupDatabase("authors.csv")
 
+	// Initalize sample queries
 	SampleQueries(*bookRepo, *authorRepo)
 }
 

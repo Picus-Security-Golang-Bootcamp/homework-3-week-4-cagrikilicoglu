@@ -82,6 +82,8 @@ func (a *AuthorRepository) FindByAuthorName(name string) ([]Author, error) {
 	return authors, nil
 }
 
+// FindBooksOfAuthorByName: returns the author with given name input as well as his/her books
+// the search is elastic and case insensitive
 func (a *AuthorRepository) FindBooksOfAuthorByName(name string) ([]Author, error) {
 	authors := []Author{}
 	nameString := fmt.Sprintf("%%%s%%", name)
