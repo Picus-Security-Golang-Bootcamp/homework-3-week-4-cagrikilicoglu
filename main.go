@@ -35,10 +35,10 @@ func main() {
 
 	// Repositories
 	bookRepo := book.NewBookRepository(db)
-	bookRepo.SetupDatabase("books.csv")
+	bookRepo.SetupDatabase("./files/books.csv")
 
 	authorRepo := author.NewAuthorRepository(db)
-	authorRepo.SetupDatabase("authors.csv")
+	authorRepo.SetupDatabase("./files/authors.csv")
 
 	// Initalize sample queries
 	SampleQueries(*bookRepo, *authorRepo)
