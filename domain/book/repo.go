@@ -14,192 +14,123 @@ func NewBookRepository(db *gorm.DB) *BookRepository {
 	return &BookRepository{db: db}
 }
 
-// alttaki iki fonksiyon ssetup içine alınabilir
+// SetupDatabase: automatically migrates database of Books with gorm and insert book data to database by the given input path
+func (b *BookRepository) SetupDatabase(path string) {
+	b.Migrations()
+	b.InsertBookData(path)
+}
+
+// Migrations: automatically migrates database of Books
 func (b *BookRepository) Migrations() {
 	b.db.AutoMigrate(&Book{})
 }
 
-func (b *BookRepository) InsertSampleData(path string) {
-	// books := []Book{
-	// 	{
-	// 		ID:          "1",
-	// 		Name:        "A Tale of Two Cities",
-	// 		PageNumber:  320,
-	// 		StockNumber: 10,
-	// 		StockID:     "21AC",
-	// 		Price:       15.3,
-	// 		ISBN:        "9780451530578",
-	// 		IsDeleted:   false,
-	// 		Author:      Author{ID: "101", Name: "Charles Dickens"},
-	// 	},
-	// 	{
-	// 		ID:          "2",
-	// 		Name:        "The Hobbit",
-	// 		PageNumber:  376,
-	// 		StockNumber: 10,
-	// 		StockID:     "44UY",
-	// 		Price:       24.0,
-	// 		ISBN:        "9780547928227",
-	// 		IsDeleted:   false,
-	// 		Author:      Author{ID: "202", Name: "J. R. R. Tolkien"},
-	// 	},
-	// 	{
-	// 		ID:          "3",
-	// 		Name:        "Harry Potter and the Philosophers Stone",
-	// 		PageNumber:  560,
-	// 		StockNumber: 10,
-	// 		StockID:     "22OL",
-	// 		Price:       32.2,
-	// 		ISBN:        "9781408855898",
-	// 		IsDeleted:   false,
-	// 		Author:      Author{ID: "303", Name: "J. K. Rowling"},
-	// 	},
-	// 	{
-	// 		ID:          "4",
-	// 		Name:        "The Little Prince",
-	// 		PageNumber:  102,
-	// 		StockNumber: 10,
-	// 		StockID:     "09UJ",
-	// 		Price:       7.8,
-	// 		ISBN:        "9781853261589",
-	// 		IsDeleted:   false,
-	// 		Author:      Author{ID: "404", Name: "Antoine de Saint-Exupéry"},
-	// 	},
-	// 	{
-	// 		ID:          "5",
-	// 		Name:        "Dream of the Red Chamber",
-	// 		PageNumber:  350,
-	// 		StockNumber: 10,
-	// 		StockID:     "77II",
-	// 		Price:       17.0,
-	// 		ISBN:        "9780385093798",
-	// 		IsDeleted:   false,
-	// 		Author:      Author{ID: "505", Name: "Cao Xueqin"},
-	// 	}}
-
-	// books := []Book{
-	// 	{
-	// 		ID:          "1",
-	// 		Name:        "A Tale of Two Cities",
-	// 		PageNumber:  320,
-	// 		StockNumber: 10,
-	// 		StockID:     "21AC",
-	// 		Price:       15.3,
-	// 		ISBN:        "9780451530578",
-	// 		IsDeleted:   false,
-	// 		AuthorID:    "101",
-	// 		AuthorName:  "Charles Dickens",
-	// 	},
-	// 	{
-	// 		ID:          "2",
-	// 		Name:        "The Hobbit",
-	// 		PageNumber:  376,
-	// 		StockNumber: 10,
-	// 		StockID:     "44UY",
-	// 		Price:       24.0,
-	// 		ISBN:        "9780547928227",
-	// 		IsDeleted:   false,
-	// 		AuthorID:    "202",
-	// 		AuthorName:  "J. R. R. Tolkien",
-	// 	},
-	// 	{
-	// 		ID:          "3",
-	// 		Name:        "Harry Potter and the Philosophers Stone",
-	// 		PageNumber:  560,
-	// 		StockNumber: 10,
-	// 		StockID:     "22OL",
-	// 		Price:       32.2,
-	// 		ISBN:        "9781408855898",
-	// 		IsDeleted:   false,
-	// 		AuthorID:    "303",
-	// 		AuthorName:  "J. K. Rowling",
-	// 	},
-	// 	{
-	// 		ID:          "4",
-	// 		Name:        "The Little Prince",
-	// 		PageNumber:  102,
-	// 		StockNumber: 10,
-	// 		StockID:     "09UJ",
-	// 		Price:       7.8,
-	// 		ISBN:        "9781853261589",
-	// 		IsDeleted:   false,
-	// 		AuthorID:    "404",
-	// 		AuthorName:  "Antoine de Saint-Exupéry",
-	// 	},
-	// 	{
-	// 		ID:          "5",
-	// 		Name:        "Dream of the Red Chamber",
-	// 		PageNumber:  350,
-	// 		StockNumber: 10,
-	// 		StockID:     "77II",
-	// 		Price:       17.0,
-	// 		ISBN:        "9780385093798",
-	// 		IsDeleted:   false,
-	// 		AuthorID:    "505",
-	// 		AuthorName:  "Cao Xueqin",
-	// 	}}
-
-	books, _ := readBooksWithWorkerPool(path)
-	// fmt.Println(results)
+// InsertBookData: insert book data to database by the given input path
+func (b *BookRepository) InsertBookData(path string) {
+	books, err := readBooksWithWorkerPool(path)
+	if err != nil {
+		return
+	}
 
 	for _, book := range books {
 		b.db.Where(Book{ID: book.ID}).Attrs(Book{ID: book.ID, Name: book.Name, PageNumber: book.PageNumber, StockNumber: book.StockNumber, StockID: book.StockID, Price: book.Price, ISBN: book.ISBN, IsDeleted: book.IsDeleted, AuthorID: book.AuthorID, AuthorName: book.AuthorName}).FirstOrCreate(&book)
 	}
 }
 
-// func (b *BookRepository) InsertReadData(xxx <-chan Book) {
-// 	// book := Book{}
-// 	b.db.Where(Book{ID: book.ID}).Attrs(Book{ID: book.ID, Name: book.Name, PageNumber: book.PageNumber, StockNumber: book.StockNumber, StockID: book.StockID, Price: book.Price, ISBN: book.ISBN, IsDeleted: book.IsDeleted, AuthorID: book.AuthorID, AuthorName: book.AuthorName}).FirstOrCreate(&book)
-// }
-
+// FindAll(): return all the books in database
 func (b *BookRepository) FindAll() []Book {
 	books := []Book{}
-
 	b.db.Find(&books)
 	return books
 }
 
-func (b *BookRepository) FindByBookID(ID string) Book {
-	book := Book{}
-	b.db.Where(&Book{ID: ID}).First(&book)
-	return book
+// FindAllInStock(): find all books that are currently in stock (stock number > 0).
+// Warning: this function is not for showing deleted books, it checks the stock numbers.
+func (b *BookRepository) FindAllInStock() []Book {
+	books := []Book{}
+	b.db.Where("stock_number > ?", 0).Find(&books)
+	return books
 }
 
+// FindAllUnderPrice(): find all books under a given price input and also that are currently in stock.
+func (b *BookRepository) FindAllBooksUnderPrice(price float32) ([]Book, error) {
+	books := []Book{}
+	b.db.Where("stock_number > ?", 0).Where("price < ?", price).Find(&books)
+	if len(books) == 0 {
+		return nil, fmt.Errorf("There is no books in the stock under %.2f\n", price)
+	}
+	return books, nil
+}
+
+// FindByBookID: returns the book with given ID input
+func (b *BookRepository) FindByBookID(ID string) (*Book, error) {
+	book := Book{}
+	result := b.db.First(&book, ID)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	// if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+	// 	return nil, result.Error
+	// }
+	return &book, nil
+}
+
+// FindByBookISBN: returns the book with given ISBN input
+func (b *BookRepository) FindByBookISBN(ISBN string) (*Book, error) {
+	book := Book{}
+	result := b.db.Where(&Book{ISBN: ISBN}).Find(&book)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &book, nil
+}
+
+// FindByBookID: returns the book/s with given name input
+// the search is elastic and case insensitive
 func (b *BookRepository) FindByBookName(name string) []Book {
 	books := []Book{}
 	nameString := fmt.Sprintf("%%%s%%", name)
-
 	b.db.Where("name ILIKE ?", nameString).Find(&books)
 	return books
 }
 
+// FindByAuthorName: returns the book/s with given author name input
+// the search is elastic and case insensitive
 func (b *BookRepository) FindByAuthorName(name string) []Book {
 	books := []Book{}
 	nameString := fmt.Sprintf("%%%s%%", name)
-
 	b.db.Where("author_name ILIKE ?", nameString).Find(&books)
 	return books
 }
 
-func (b *BookRepository) DeleteByID(id string) (Book, error) {
-	book := Book{}
-	result := b.db.Delete(&Book{}, id)
+// DeleteByBookID: soft deletes book from the database
+func (b *BookRepository) DeleteByBookID(id string) error {
+	// book := Book{}
+	book, err := b.FindByBookID(id)
+	if err != nil {
+		return err
+	}
+	result := b.db.Delete(&book)
 	if result.Error != nil {
-		return book, result.Error
+		return result.Error
 	}
 	// buraya return fonksiyonu eklenebilir
-	b.db.Unscoped().Where(&Book{ID: id}).Find(&book)
+	// b.db.Unscoped().Where(&Book{ID: id}).Find(&book)
 	// fmt.Println(book)
-	return book, nil
+	return nil
 }
 
-func (b *BookRepository) BuyByID(id string, num int) error {
+// BuyByBookID: orders books that is in the database (not soft deleted) with given id input and requested quantity only if there is enough stock for the order.
+func (b *BookRepository) BuyByBookID(id string, num int) error {
 	// book := Book{}
-	book := b.FindByBookID(id)
+	book, err := b.FindByBookID(id)
+	if err != nil {
+		return err
+	}
 	if book.StockNumber >= num {
 		b.db.Model(&book).Update("stock_number", book.StockNumber-num)
 	} else {
-		return fmt.Errorf("Not enough stock")
+		return fmt.Errorf("Not enough stock for %s, please order less than %d book/s.\n", book.Name, book.StockNumber)
 	}
 	// b.db.Model(&book).Where("stock_number >= ?", num).Update("stock_number", book.StockNumber-num)
 	fmt.Println(book.StockNumber)

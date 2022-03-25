@@ -18,7 +18,7 @@ func (a *AuthorRepository) Migrations() {
 	a.db.AutoMigrate(&Author{})
 }
 
-func (a *AuthorRepository) InsertSampleData(path string) {
+func (a *AuthorRepository) InsertAuthorData(path string) {
 	// authors := []Author{
 	// {
 	// 	ID:   "101",
