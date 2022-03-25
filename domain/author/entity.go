@@ -3,6 +3,7 @@ package author
 import (
 	"bookApp/domain/book"
 	"fmt"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -16,5 +17,17 @@ type Author struct {
 
 // ToString: Convert author data into more readable string
 func (a *Author) ToString() string {
-	return fmt.Sprintf("ID: %s, Name: %s, Books: %v", a.ID, a.Name, a.Books)
+	return fmt.Sprintf("ID: %s, Name: %s", a.ID, a.Name)
+}
+
+// ToStringWithBooks: Convert author data into more readable string with book more readable book info
+func (a *Author) ToStringWithBooks() string {
+	authorInfo := fmt.Sprintf("ID: %s, Name: %s", a.ID, a.Name)
+	bookInfo := []string{}
+	for _, book := range a.Books {
+		bookInfo = append(bookInfo, book.ToString())
+	}
+	bookInfoJoined := strings.Join(bookInfo, "\n")
+
+	return fmt.Sprintf("Author: %s has books:\n%s", authorInfo, bookInfoJoined)
 }

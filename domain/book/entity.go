@@ -19,10 +19,6 @@ type Book struct {
 	AuthorName  string
 }
 
-type Books struct {
-	Books []Book
-}
-
 // ToString: Convert book data into more readable string
 func (b *Book) ToString() string {
 	return fmt.Sprintf("ID: %s, Name: %s, Page Number: %d, Stock Number: %d, StockID: %s, Price: %.2f, ISBN: %s, Author ID: %s, Author Name: %s\n", b.ID, b.Name, b.PageNumber, b.StockNumber, b.StockID, b.Price, b.ISBN, b.AuthorID, b.AuthorName)
@@ -44,12 +40,4 @@ func (b *Book) AfterDelete(tx *gorm.DB) error {
 // AfterDelete: Print book name after it is deleted with a success message.
 func (b *Book) AfterOrder(num int) {
 	fmt.Printf("Book %s of quantity %d is succesfully ordered...\n", b.Name, num)
-}
-
-func (bs *Books) ToString() []string {
-	books := []string{}
-	for _, book := range bs.Books {
-		books = append(books, book.ToString())
-	}
-	return books
 }
