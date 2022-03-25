@@ -1,6 +1,7 @@
 package main
 
 import (
+	// "bookApp/pkg/csv_utils"
 	"bookApp/pkg/Base/book"
 	postgres "bookApp/pkg/db"
 	"log"
@@ -25,8 +26,8 @@ func main() {
 
 	// Repositories
 	bookrepo := book.NewBookRepository(db)
-	// bookrepo.Migrations()
-	// bookrepo.InsertSampleData()
+	bookrepo.Migrations()
+	bookrepo.InsertSampleData("books.csv")
 
 	// authorrepo := author.NewAuthorRepository(db)
 	// authorrepo.Migrations()
@@ -38,7 +39,9 @@ func main() {
 	// fmt.Println(authorrepo.FindByAuthorID("404"))
 	// fmt.Println(authorrepo.FindByAuthorName("J."))
 	// fmt.Println(bookrepo.FindByAuthorName("ca"))
-	bookrepo.DeleteByID("4")
+	// bookrepo.DeleteByID("4")
 	// fmt.Println(bookrepo.BuyByID("4", 3))
 	// bookList.CreateList()
+
+	// csv_utils.GetBooksWithWorkerPool("books.csv")
 }
